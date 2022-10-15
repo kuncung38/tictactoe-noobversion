@@ -99,7 +99,7 @@ def xo_select(x):
     global popup
     popup.deiconify()
     player_label = Label(popup, text=f'You have selected {player_character}', font=FONT)
-    player_label.grid(row=3, column=0, columnspan= 3, padx=10, pady=20)
+    player_label.grid(row=3, column=0, columnspan= 3, padx=10, pady=(20,0))
     
     global start_button
     start_button = Button(popup, text='Start!', command=draw_board, font=FONT)
@@ -113,17 +113,17 @@ def player_pos(position):
     global winner
     if turn == 1 and turns < 9 and game_over == False:
         if positions[position] == '-':
+            if turns >= 8:
+                winner = ''
+                game_over = True
+                messagebox.showinfo(title="It's a draw!", message="How could you get a draw vs a simple AI????")
             positions[position] = player_character
             pos_buttons[position]['text'] = positions[position]
             game_over = check_game_over(positions)
             turn = 0
             turns += 1
             ai_turn()
-        elif turns > 8:
-            winner = ''
-            game_over = True
-            win_label.config(text=f'It is a draw!')
-            win_label.grid(row=8, column=0, columnspan=3)
+        
 
 def draw_board():
     global positions
@@ -164,7 +164,7 @@ player_select_label.grid(row=1, column=0, columnspan= 3, padx=10, pady=1)
 #Position_buttons definition
 for j in range(9):
     pos_buttons.append(Button(popup, text=positions[j], command=lambda j=j: player_pos(j), 
-                                    font=FONT, height= 3, width=3))
+                                    font=FONT, height= 3, width=7))
 
 #x & o buttons definition and placement
 xo_buttons = {}
