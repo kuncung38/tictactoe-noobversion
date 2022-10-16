@@ -81,7 +81,7 @@ def check_game_over(pos):
 
     return game_over
 
-def minimax(positions, is_maximizing):
+def minimaxab(positions, is_maximizing, alpha, beta):
     if check_win(positions, ai_character):
         return 1
     elif check_win(positions, player_character):
@@ -94,11 +94,15 @@ def minimax(positions, is_maximizing):
         for pos in range(len(positions)):
             if positions[pos] == '-':
                 positions[pos] = ai_character
-                score = minimax(positions, False)
+                score = minimaxab(positions, False, alpha, beta)
                 positions[pos] = '-'
-                if score > best_score:
-                    best_score = score
-        
+                best_score = max(score, best_score)
+                # if score > best_score:
+                                #     best_score = score
+                alpha = max(alpha, best_score)
+                if alpha >= beta:
+                    break
+                
         return best_score
 
     else:
@@ -106,10 +110,15 @@ def minimax(positions, is_maximizing):
         for pos in range(len(positions)):
             if positions[pos] == '-':
                 positions[pos] = player_character
-                score = minimax(positions, True)
+                score = minimaxab(positions, True, alpha, beta)
                 positions[pos] = '-'
-                if score < best_score:
-                    best_score = score
+                best_score = min(score, best_score)
+                # if score < best_score:
+                #     best_score = score
+
+                beta = min(beta, best_score)
+                if beta <= alpha:
+                    break
         return best_score
 
 def ai_turn():
@@ -123,11 +132,13 @@ def ai_turn():
         else:    
             best_score = -1000
             best_move = 0
+            alpha = -1000
+            beta = 1000
 
             for pos in range(len(positions)):
                 if positions[pos] == '-':
                     positions[pos] = ai_character
-                    score = minimax(positions, False)
+                    score = minimaxab(positions, False, alpha, beta)
                     positions[pos] = '-'
                     if score > best_score:
                         best_score = score
